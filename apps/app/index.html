@@ -34,14 +34,17 @@
     </div>
 
     <section class="last-alert-card" aria-live="polite">
-      <img
-        class="last-alert-map"
-        src="/src/assets/israel-outline.svg"
-        width="60"
-        height="80"
-        alt=""
-        aria-hidden="true"
-      >
+      <div class="last-alert-map-wrap" id="last-alert-map-wrap">
+        <img
+          class="last-alert-map"
+          src="/src/assets/israel-outline.svg"
+          width="90"
+          height="120"
+          alt=""
+          aria-hidden="true"
+        >
+        <span id="alert-pin" class="alert-pin" aria-hidden="true"></span>
+      </div>
       <div class="last-alert-copy">
         <div class="last-alert-label">LAST</div>
         <div id="last-location" class="last-alert-value">—</div>
