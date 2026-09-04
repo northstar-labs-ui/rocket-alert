@@ -8,6 +8,90 @@ const MAX_RETRY_DELAY = 10000;
 const REQUEST_TIMEOUT = 10000;
 const ALERT_SIREN_URL = new URL('./assets/air-raid-siren.mp3', import.meta.url).href;
 
+
+const CITY_PINS = {
+  'tel aviv': [34, 36],
+  'tel aviv yafo': [34, 36],
+  'tel avivyafo': [34, 36],
+  jerusalem: [52, 40],
+  haifa: [40, 16],
+  netanya: [36, 28],
+  ashkelon: [30, 48],
+  ashdod: [32, 44],
+  sderot: [28, 52],
+  'beer sheva': [42, 62],
+  'beer sheba': [42, 62],
+  beersheba: [42, 62],
+  beersheva: [42, 62],
+  eilat: [48, 92],
+  nahariya: [42, 10],
+  'kiryat shmona': [50, 6],
+  gaza: [22, 50],
+  'gaza city': [22, 50],
+  'rishon lezion': [34, 38],
+  'rishon leziyyon': [34, 38],
+  'petah tikva': [38, 36],
+  rehovot: [36, 42],
+  holon: [34, 40],
+  'bat yam': [32, 40],
+  herzliya: [36, 32],
+  'ramat gan': [36, 36],
+  'bnei brak': [36, 36],
+  lod: [38, 40],
+  ramla: [36, 42],
+  modiin: [44, 40],
+  'modiin maccabim reut': [44, 40],
+  dimona: [48, 68],
+  ofakim: [34, 58],
+  netivot: [32, 56],
+  rahat: [38, 58],
+  yavne: [34, 44],
+  'kiryat gat': [36, 52],
+  'beit shemesh': [46, 42],
+  afula: [44, 24],
+  tiberias: [50, 20],
+  safed: [50, 14],
+  acre: [40, 12],
+  akko: [40, 12],
+};
+const DEFAULT_PIN = [40, 38];
+
+function normalizeCityKey(name) {
+  return String(name || '')
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[''`]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function pinForLocation(name) {
+  const key = normalizeCityKey(name);
+  if (!key) return DEFAULT_PIN;
+  if (CITY_PINS[key]) return CITY_PINS[key];
+  // also try without spaces for things like telavivyafo
+  const compact = key.replace(/\s+/g, '');
+  for (const [k, v] of Object.entries(CITY_PINS)) {
+    if (k.replace(/\s+/g, '') === compact) return v;
+  }
+  // partial: if key starts with a known city
+  for (const [k, v] of Object.entries(CITY_PINS)) {
+    if (key.startsWith(k) || k.startsWith(key)) return v;
+  }
+  return DEFAULT_PIN;
+}
+
+function placeAlertPin(locationName) {
+  const wrap = document.getElementById('last-alert-map-wrap');
+  if (!wrap) return;
+  const [x, y] = pinForLocation(locationName);
+  wrap.style.setProperty('--pin-x', `${x}%`);
+  wrap.style.setProperty('--pin-y', `${y}%`);
+  wrap.classList.add('is-placed');
+}
+
 let lastAlertTime = null;
 let lastAlertLocation = '';
 let timerInterval = null;
@@ -159,6 +243,7 @@ function applyLatestAlert(alerts, flashOnChange) {
   lastAlertTime = latestTimestamp;
   lastAlertLocation = latestAlert.englishName || latestAlert.name || 'Unknown';
   elLocation.textContent = lastAlertLocation;
+  placeAlertPin(lastAlertLocation);
 
   if (changed && flashOnChange) triggerAlertEffects();
   updateTimer();
