@@ -1,3 +1,5 @@
+import { FALLBACK_PIN, projectLatLon } from './map-projection.js';
+
 const HISTORY_URL = 'https://agg.rocketalert.live/api/v1/alerts/past48h';
 const LATEST_URL = 'https://agg.rocketalert.live/api/v1/alerts/latest';
 const REALTIME_CACHE_URL = 'https://agg.rocketalert.live/api/v2/alerts/real-time/cached';
@@ -8,23 +10,6 @@ const MAX_RETRY_DELAY = 10000;
 const REQUEST_TIMEOUT = 10000;
 const ALERT_SIREN_URL = new URL('./assets/air-raid-siren.mp3', import.meta.url).href;
 
-
-const LAT_MIN = 29.45;
-const LAT_MAX = 33.35;
-const LON_MIN = 34.20;
-const LON_MAX = 35.95;
-const FALLBACK_PIN = [50, 45]; // center-ish when lat/lon missing
-
-function clamp01(v, lo = 0.02, hi = 0.98) {
-  return Math.min(hi, Math.max(lo, v));
-}
-
-/** Equirectangular projection onto Israel outline SVG bounds. Returns [x%, y%]. */
-function projectLatLon(lat, lon) {
-  const x = clamp01((lon - LON_MIN) / (LON_MAX - LON_MIN));
-  const y = clamp01((LAT_MAX - lat) / (LAT_MAX - LAT_MIN)); // SVG y grows down
-  return [x * 100, y * 100];
-}
 
 function placeAlertPin(lat, lon) {
   const wrap = document.getElementById('last-alert-map-wrap');
