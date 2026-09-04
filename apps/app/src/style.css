@@ -367,29 +367,71 @@ body.alert-pulse::after {
   z-index: 2;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  gap: 10px;
   min-width: 0;
   min-height: 0;
-  padding: 12px 14px;
+  padding: 10px 12px;
   background: var(--panel);
   border: 1px solid var(--line);
   border-radius: 10px;
   box-shadow: inset 0 0 22px rgba(36, 86, 59, 0.1);
 }
 
+.last-alert-map-wrap {
+  position: relative;
+  flex: 0 0 auto;
+  width: 90px;
+  height: 120px;
+  --pin-x: 40%;
+  --pin-y: 38%;
+}
+
 .last-alert-map {
   display: block;
-  flex: 0 0 auto;
-  width: 60px;
-  height: 80px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   background: transparent;
   pointer-events: none;
 }
 
+.alert-pin {
+  position: absolute;
+  left: var(--pin-x);
+  top: var(--pin-y);
+  width: 10px;
+  height: 14px;
+  /* rotate first (RTL), then translate so the tip sits on the city */
+  transform: translate(-50%, -90%) rotate(-45deg);
+  opacity: 0;
+  pointer-events: none;
+  background: var(--orange);
+  border-radius: 50% 50% 50% 0;
+  box-shadow: 0 0 10px var(--orange), 0 0 4px rgba(255, 90, 44, 0.9);
+}
+
+.alert-pin::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #1a0804;
+  transform: translate(-50%, -50%);
+}
+
+.last-alert-map-wrap.is-placed .alert-pin {
+  opacity: 1;
+}
+
 .last-alert-copy {
   min-width: 0;
   flex: 1 1 auto;
+  margin-left: 8px;
+  text-align: right;
 }
 
 .last-alert-label {
@@ -468,17 +510,26 @@ body.alert-pulse::after {
   }
 
   .last-alert-card {
-    gap: 10px;
+    gap: 8px;
     padding: 8px 10px;
   }
 
-  .last-alert-map {
-    width: 52px;
-    height: 70px;
+  .last-alert-map-wrap {
+    width: 78px;
+    height: 104px;
+  }
+
+  .last-alert-copy {
+    margin-left: 6px;
   }
 
   .last-alert-value {
     font-size: 13px;
+  }
+
+  .alert-pin {
+    width: 9px;
+    height: 12px;
   }
 }
 
