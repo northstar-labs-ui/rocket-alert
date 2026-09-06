@@ -401,26 +401,14 @@ body.alert-pulse::after {
   left: var(--pin-x);
   top: var(--pin-y);
   width: 10px;
-  height: 14px;
-  /* rotate first (RTL), then translate so the tip sits on the city */
-  transform: translate(-50%, -90%) rotate(-45deg);
+  height: 10px;
+  /* center the dot on the projected point */
+  transform: translate(-50%, -50%);
   opacity: 0;
   pointer-events: none;
-  background: var(--orange);
-  border-radius: 50% 50% 50% 0;
-  box-shadow: 0 0 10px var(--orange), 0 0 4px rgba(255, 90, 44, 0.9);
-}
-
-.alert-pin::after {
-  content: "";
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 3px;
-  height: 3px;
+  background: #ff0000;
   border-radius: 50%;
-  background: #1a0804;
-  transform: translate(-50%, -50%);
+  box-shadow: none;
 }
 
 .last-alert-map-wrap.is-placed .alert-pin {
@@ -528,8 +516,8 @@ body.alert-pulse::after {
   }
 
   .alert-pin {
-    width: 9px;
-    height: 12px;
+    width: 8px;
+    height: 8px;
   }
 }
 
